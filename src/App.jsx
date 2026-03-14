@@ -946,7 +946,7 @@ const S = {
   card:         {background:"#10181f",border:"1px solid #1e3448",borderRadius:12,padding:18},
   cardLabel:    {margin:"0 0 12px 0",fontSize:11,fontWeight:700,color:"#7a9ab0",textTransform:"uppercase",letterSpacing:1},
   row:          {display:"flex",gap:10,alignItems:"center",flexWrap:"wrap"},
-  input:        {background:"#0d1117",border:"1px solid #1e3448",borderRadius:8,color:"#f0f4f8",padding:"10px 14px",fontSize:14,flex:1,outline:"none",minWidth:0},
+  input:        {background:"#0d1117",border:"1px solid #1e3448",borderRadius:8,color:"#f0f4f8",padding:"10px 14px",fontSize:16,flex:1,outline:"none",minWidth:0},
   btnPrimary:   {background:"#2563eb",color:"#fff",border:"none",borderRadius:8,padding:"10px 18px",fontWeight:700,fontSize:14,cursor:"pointer"},
   btnSecondary: {background:"#1e3448",color:"#a3b4c8",border:"none",borderRadius:8,padding:"10px 18px",fontWeight:600,fontSize:14,cursor:"pointer"},
   btnDanger:    {background:"transparent",color:"#f87171",border:"1px solid #f87171",borderRadius:6,padding:"6px 12px",fontSize:12,cursor:"pointer"},
