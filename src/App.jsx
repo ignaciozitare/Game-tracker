@@ -500,17 +500,17 @@ export default function App() {
 // ── Tab Players ───────────────────────────────────────────────────────────────
 function TabPlayers({players,games,onAdd,onDeactivate}){
   const {t}=useLang(); const [name,setName]=useState("");
-  const [pendingDeactivate,setPendingDeactivate]=useState(null);
   const active=players.filter(p=>p.active);
   const submit=()=>{const n=name.trim();if(!n)return;onAdd(n);setName("");};
-  const askDeactivate = (p) => {
+  const confirmDeactivate = (p) => {
     const linkedGames = games.filter(g => g.playerIds.includes(p.id)).length;
-    setPendingDeactivate({ player:p, linkedGames });
-  };
-  const confirmDeactivate = () => {
-    if(!pendingDeactivate) return;
-    onDeactivate(pendingDeactivate.player.id);
-    setPendingDeactivate(null);
+    const msg = linkedGames > 0
+      ? `¿Seguro que querés dar de baja a ${p.name}?
+
+Este jugador aparece en ${linkedGames} partida${linkedGames!==1?"s":""}.
+El historial y ranking se conservan.`
+      : `¿Seguro que querés dar de baja a ${p.name}?`;
+    if (window.confirm(msg)) onDeactivate(p.id);
   };
   return(
     <div style={S.tabContent}>
@@ -528,12 +528,11 @@ function TabPlayers({players,games,onAdd,onDeactivate}){
           {active.map(p=>(
             <div key={p.id} style={S.playerRow}>
               <div><span style={S.playerName}>{p.name}</span><span style={S.meta}> · {p.createdAt}</span></div>
-              <button style={S.btnDanger} onClick={()=>askDeactivate(p)}>{t.deactivate}</button>
+              <button style={S.btnDanger} onClick={()=>confirmDeactivate(p)}>{t.deactivate}</button>
             </div>
           ))}
         </div>
       }
-      {pendingDeactivate&&<div style={S.overlay} onClick={()=>setPendingDeactivate(null)}><div style={{...S.modalBox,maxWidth:460}} onClick={e=>e.stopPropagation()}><div style={S.modalHeader}><div><p style={{margin:0,fontSize:16,fontWeight:800,color:"#f0f4f8"}}>Confirmar baja</p><p style={{margin:0,fontSize:12,color:"#7a9ab0"}}>{pendingDeactivate.player.name}</p></div><button style={S.modalClose} onClick={()=>setPendingDeactivate(null)}>✕</button></div><div style={{padding:18,display:"flex",flexDirection:"column",gap:12}}><p style={{margin:0,color:"#a3b4c8",lineHeight:1.5}}>¿Seguro que querés dar de baja este jugador?</p>{pendingDeactivate.linkedGames>0&&<p style={{margin:0,color:"#fbbf24",fontSize:13,lineHeight:1.5}}>Aparece en {pendingDeactivate.linkedGames} partida{pendingDeactivate.linkedGames!==1?"s":""}. El historial y ranking se conservan.</p>}<div style={{display:"flex",gap:8,justifyContent:"flex-end"}}><button style={S.btnSecondary} onClick={()=>setPendingDeactivate(null)}>{t.cancelClose}</button><button style={S.btnClose} onClick={confirmDeactivate}>Confirmar</button></div></div></div></div>}
     </div>
   );
 }
