@@ -793,6 +793,17 @@ function CellInputModal({combo,playerName,onSave,onClose}){
   );
 }
 
+
+function renderGeneralaCell(game,p,combo,setCellModal){
+  const v=game.scorecards[p.id][combo.id];
+  const filled=v!==null;
+  return(
+    <td key={p.id} style={{...S.tdCell,cursor:"pointer"}} onClick={()=>setCellModal({playerId:p.id,comboId:combo.id,combo})}>
+      {filled?<span style={{fontWeight:700,color:v===0?"#374151":"#10b981"}}>{v===0?"✗":v}</span>:<span style={{color:"#1e3448",fontSize:22}}>·</span>}
+    </td>
+  );
+}
+
 // ── Tab Active Generala ───────────────────────────────────────────────────────
 function TabActiveGenerala({game,players,getScores,onFillCell,onUndo,onClose,GEN_COMBOS}){
   const {t}=useLang();
@@ -833,7 +844,7 @@ function TabActiveGenerala({game,players,getScores,onFillCell,onUndo,onClose,GEN
               <tr><td colSpan={gp.length+1} style={S.secHeader}>{t.upperSec}</td></tr>
               {GEN_COMBOS.filter(c=>c.sec==="upper").map(combo=>(
                 <tr key={combo.id}><td style={S.tdLabel}><span style={{fontWeight:600,color:"#d1d5db"}}>{combo.label}</span><span style={{display:"block",fontSize:10,color:"#4a6070"}}>{combo.hint}</span></td>
-                  {gp.map(p=>{const v=game.scorecards[p.id][combo.id];const filled=v!==null;return(<td key={p.id} style={{...S.tdCell,cursor:"pointer"}} onClick={()=>setCellModal({playerId:p.id,comboId:combo.id,combo})}>{filled?<span style={{fontWeight:700,color:v===0?"#374151":"#10b981"}}>{v===0?"✗":v}</span>:<span style={{color:"#1e3448",fontSize:22}}>·</span>}</td>);})}
+                  {gp.map(p=>renderGeneralaCell(game,p,combo,setCellModal))}
                 </tr>
               ))}
               <tr style={{background:"rgba(255,255,255,0.015)"}}>
@@ -843,7 +854,7 @@ function TabActiveGenerala({game,players,getScores,onFillCell,onUndo,onClose,GEN
               <tr><td colSpan={gp.length+1} style={S.secHeader}>{t.lowerSec}</td></tr>
               {GEN_COMBOS.filter(c=>c.sec==="lower").map(combo=>(
                 <tr key={combo.id}><td style={S.tdLabel}><span style={{fontWeight:600,color:"#d1d5db"}}>{combo.label}</span><span style={{display:"block",fontSize:10,color:"#4a6070"}}>{combo.hint}</span></td>
-                  {gp.map(p=>{const v=game.scorecards[p.id][combo.id];const filled=v!==null;return(<td key={p.id} style={{...S.tdCell,cursor:"pointer"}} onClick={()=>setCellModal({playerId:p.id,comboId:combo.id,combo})}>{filled?<span style={{fontWeight:700,color:v===0?"#374151":"#10b981"}}>{v===0?"✗":v}</span>:<span style={{color:"#1e3448",fontSize:22}}>·</span>}</td>);})}
+                  {gp.map(p=>renderGeneralaCell(game,p,combo,setCellModal))}
                 </tr>
               ))}
               <tr style={{background:"rgba(245,158,11,0.06)"}}><td style={{...S.tdLabel,fontWeight:800,color:"#f0f4f8",fontSize:13,borderTop:"2px solid #2a3a1a"}}>{t.total}</td>{gp.map(p=><td key={p.id} style={{...S.tdCell,fontWeight:900,fontSize:17,color:"#fbbf24",borderTop:"2px solid #2a3a1a"}}>{scores[p.id]||0}</td>)}</tr>
