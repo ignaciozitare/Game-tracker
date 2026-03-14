@@ -482,7 +482,7 @@ export default function App() {
             ))}
           </nav>
           <main style={S.main}>
-            {tab==="players" && <TabPlayers players={players} onAdd={addPlayer} onDeactivate={deactivatePlayer}/>}
+            {tab==="players" && <TabPlayers players={players} games={games} onAdd={addPlayer} onDeactivate={deactivatePlayer}/>}
             {tab==="newgame"&&selGame==="uno"      && <TabNewGameUno      players={players} activeGame={curActive} onCreate={createGame}/>}
             {tab==="newgame"&&selGame==="generala" && <TabNewGameGenerala players={players} activeGame={curActive} onCreate={createGame}/>}
             {tab==="active" &&selGame==="uno"      && <TabActiveUno       game={curActive} players={players} getScores={getScores} onAddRound={addRound} onCutJust={cutJust} onUndo={undoLast} onClose={closeGame}/>}
@@ -498,10 +498,20 @@ export default function App() {
 }
 
 // ── Tab Players ───────────────────────────────────────────────────────────────
-function TabPlayers({players,onAdd,onDeactivate}){
+function TabPlayers({players,games,onAdd,onDeactivate}){
   const {t}=useLang(); const [name,setName]=useState("");
   const active=players.filter(p=>p.active);
   const submit=()=>{const n=name.trim();if(!n)return;onAdd(n);setName("");};
+  const confirmDeactivate = (p) => {
+    const linkedGames = games.filter(g => g.playerIds.includes(p.id)).length;
+    const msg = linkedGames > 0
+      ? `¿Seguro que querés dar de baja a ${p.name}?
+
+Este jugador aparece en ${linkedGames} partida${linkedGames!==1?"s":""}.
+El historial y ranking se conservan.`
+      : `¿Seguro que querés dar de baja a ${p.name}?`;
+    if (window.confirm(msg)) onDeactivate(p.id);
+  };
   return(
     <div style={S.tabContent}>
       <h2 style={S.sectionTitle}>{t.players}</h2>
@@ -518,7 +528,7 @@ function TabPlayers({players,onAdd,onDeactivate}){
           {active.map(p=>(
             <div key={p.id} style={S.playerRow}>
               <div><span style={S.playerName}>{p.name}</span><span style={S.meta}> · {p.createdAt}</span></div>
-              <button style={S.btnDanger} onClick={()=>onDeactivate(p.id)}>{t.deactivate}</button>
+              <button style={S.btnDanger} onClick={()=>confirmDeactivate(p)}>{t.deactivate}</button>
             </div>
           ))}
         </div>
@@ -780,6 +790,7 @@ function TabActiveGenerala({game,players,getScores,onFillCell,onUndo,onClose,GEN
   const {t}=useLang();
   const [cellModal,setCellModal]=useState(null);
   const [confirmClose,setConfirmClose]=useState(false);
+  const [showBreakdown,setShowBreakdown]=useState(false);
   if(!game) return(<div style={S.tabContent}><h2 style={S.sectionTitle}>{t.active}</h2><div style={S.empty}>{t.noActive}</div></div>);
   const gp=game.playerIds.map(id=>players.find(p=>p.id===id)).filter(Boolean);
   const scores=getScores(game);
@@ -795,7 +806,10 @@ function TabActiveGenerala({game,players,getScores,onFillCell,onUndo,onClose,GEN
       <div style={S.gameInfo}><span style={{flex:1}}>🎲 <strong style={{color:"#f0f4f8"}}>{game.name}</strong></span><span style={{color:"#4a6070",fontSize:12}}>{game.startedAt}</span></div>
       {isComplete&&<div style={{...S.banner,background:"rgba(245,158,11,0.10)",borderColor:"#f59e0b",color:"#fbbf24"}}>{t.completeMsg(sorted[0]?.name,scores[sorted[0]?.id])}</div>}
       <div style={S.card}>
-        <p style={{...S.cardLabel,margin:"0 0 14px"}}>{t.scoreLabelGen}</p>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+          <p style={{...S.cardLabel,margin:0}}>{t.scoreLabelGen}</p>
+          <button style={S.btnBreakdown} onClick={()=>setShowBreakdown(true)}>{t.breakdown}</button>
+        </div>
         {sorted.map((p,i)=>{
           const sc=scores[p.id]||0,pct=Math.min(100,(sc/maxPossible)*100);
           const filled=GEN_COMBOS.filter(c=>game.scorecards[p.id][c.id]!==null).length;
@@ -811,7 +825,7 @@ function TabActiveGenerala({game,players,getScores,onFillCell,onUndo,onClose,GEN
               <tr><td colSpan={gp.length+1} style={S.secHeader}>{t.upperSec}</td></tr>
               {GEN_COMBOS.filter(c=>c.sec==="upper").map(combo=>(
                 <tr key={combo.id}><td style={S.tdLabel}><span style={{fontWeight:600,color:"#d1d5db"}}>{combo.label}</span><span style={{display:"block",fontSize:10,color:"#4a6070"}}>{combo.hint}</span></td>
-                  {gp.map(p=>{const v=game.scorecards[p.id][combo.id];const filled=v!==null;return(<td key={p.id} style={{...S.tdCell,cursor:filled?"default":"pointer"}} onClick={()=>!filled&&setCellModal({playerId:p.id,comboId:combo.id,combo})}>{filled?<span style={{fontWeight:700,color:v===0?"#374151":"#10b981"}}>{v===0?"✗":v}</span>:<span style={{color:"#1e3448",fontSize:22}}>·</span>}</td>);})}
+                  {gp.map(p=>{const v=game.scorecards[p.id][combo.id];const filled=v!==null;return(<td key={p.id} style={{...S.tdCell,cursor:"pointer"}} onClick={()=>setCellModal({playerId:p.id,comboId:combo.id,combo})}>{filled?<span style={{fontWeight:700,color:v===0?"#374151":"#10b981"}}>{v===0?"✗":v}</span>:<span style={{color:"#1e3448",fontSize:22}}>·</span>}</td>);})}
                 </tr>
               ))}
               <tr style={{background:"rgba(255,255,255,0.015)"}}>
@@ -821,7 +835,7 @@ function TabActiveGenerala({game,players,getScores,onFillCell,onUndo,onClose,GEN
               <tr><td colSpan={gp.length+1} style={S.secHeader}>{t.lowerSec}</td></tr>
               {GEN_COMBOS.filter(c=>c.sec==="lower").map(combo=>(
                 <tr key={combo.id}><td style={S.tdLabel}><span style={{fontWeight:600,color:"#d1d5db"}}>{combo.label}</span><span style={{display:"block",fontSize:10,color:"#4a6070"}}>{combo.hint}</span></td>
-                  {gp.map(p=>{const v=game.scorecards[p.id][combo.id];const filled=v!==null;return(<td key={p.id} style={{...S.tdCell,cursor:filled?"default":"pointer"}} onClick={()=>!filled&&setCellModal({playerId:p.id,comboId:combo.id,combo})}>{filled?<span style={{fontWeight:700,color:v===0?"#374151":combo.id==="generala"&&v===100?"#fbbf24":"#10b981"}}>{v===0?"✗":v}{combo.id==="generala"&&v===100?"⭐":""}</span>:<span style={{color:"#1e3448",fontSize:22}}>·</span>}</td>);})}
+                  {gp.map(p=>{const v=game.scorecards[p.id][combo.id];const filled=v!==null;return(<td key={p.id} style={{...S.tdCell,cursor:"pointer"}} onClick={()=>setCellModal({playerId:p.id,comboId:combo.id,combo})}>{filled?<span style={{fontWeight:700,color:v===0?"#374151":combo.id==="generala"&&v===100?"#fbbf24":"#10b981"}}>{v===0?"✗":v}{combo.id==="generala"&&v===100?"⭐":""}</span>:<span style={{color:"#1e3448",fontSize:22}}>·</span>}</td>);})}
                 </tr>
               ))}
               <tr style={{background:"rgba(245,158,11,0.06)"}}><td style={{...S.tdLabel,fontWeight:800,color:"#f0f4f8",fontSize:13,borderTop:"2px solid #2a3a1a"}}>{t.total}</td>{gp.map(p=><td key={p.id} style={{...S.tdCell,fontWeight:900,fontSize:17,color:"#fbbf24",borderTop:"2px solid #2a3a1a"}}>{scores[p.id]||0}</td>)}</tr>
@@ -837,11 +851,52 @@ function TabActiveGenerala({game,players,getScores,onFillCell,onUndo,onClose,GEN
         </div>
       </div>
       {cellModal&&<CellInputModal combo={cellModal.combo} playerName={players.find(p=>p.id===cellModal.playerId)?.name} onSave={v=>{onFillCell(cellModal.playerId,cellModal.comboId,v);setCellModal(null);}} onClose={()=>setCellModal(null)}/>}
+      {showBreakdown&&<BreakdownModalGenerala game={game} players={players} GEN_COMBOS={GEN_COMBOS} onClose={()=>setShowBreakdown(false)}/>}
+    </div>
+  );
+}
+
+
+
+function BreakdownModalGenerala({game,players,GEN_COMBOS,onClose}){
+  const {t}=useLang();
+  const gp=game.playerIds.map(id=>players.find(p=>p.id===id)).filter(Boolean);
+  const rows=game.events.filter(e=>e.type==="FILL_CELL");
+  const running={}; gp.forEach(p=>running[p.id]=0);
+  const enriched=rows.map((e,i)=>{
+    const prev=e.prevValue??0; const val=e.value??0;
+    running[e.playerId]=(running[e.playerId]||0)-prev+val;
+    return { ...e, label:`${t.roundLabel} ${i+1}`, combo:GEN_COMBOS.find(c=>c.id===e.comboId)?.label||e.comboId, snap:{...running}, delta:val-prev };
+  });
+  return(
+    <div style={S.overlay} onClick={onClose}>
+      <div style={S.modalBox} onClick={e=>e.stopPropagation()}>
+        <div style={S.modalHeader}>
+          <div><p style={{margin:0,fontSize:16,fontWeight:800,color:"#f0f4f8"}}>{t.bdBreakdown}</p><p style={{margin:0,fontSize:11,color:"#7a9ab0"}}>{game.name}</p></div>
+          <button style={S.modalClose} onClick={onClose}>✕</button>
+        </div>
+        <div style={S.modalBody}>
+          {enriched.length===0&&<p style={{color:"#4a6070",textAlign:"center",padding:"24px 0"}}>{t.bdNoEvents}</p>}
+          {enriched.map((r,ri)=>(
+            <div key={r.id} style={{...S.bdRoundBlock,background:ri%2===0?"rgba(255,255,255,0.02)":"transparent"}}>
+              <div style={{...S.bdRow,justifyContent:"space-between"}}>
+                <span style={{...S.bdLabelCell,flex:2.5}}>{r.label} · {players.find(p=>p.id===r.playerId)?.name} · {r.combo}</span>
+                <span style={{fontWeight:800,color:r.delta>=0?"#10b981":"#f87171"}}>{r.delta>=0?`+${r.delta}`:r.delta}</span>
+              </div>
+              <div style={{...S.bdRow,paddingBottom:6,borderBottom:"1px solid #172030"}}>
+                <span style={{...S.bdLabelCell,color:"#3a5068",fontSize:11}}>{t.bdAccum}</span>
+                {gp.map(p=><span key={p.id} style={S.bdDataCell}><span style={{fontWeight:800,fontSize:14,color:"#fbbf24"}}>{r.snap[p.id]||0}</span></span>)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
 // ── Tab History ───────────────────────────────────────────────────────────────
+
 function TabHistory({games,players,getScores,gameType,GEN_COMBOS}){
   const {t}=useLang(); const [open,setOpen]=useState(null);
   const sorted=[...games].sort((a,b)=>b.startedAt<a.startedAt?-1:1);
