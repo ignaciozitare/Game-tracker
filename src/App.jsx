@@ -1,8 +1,40 @@
 import { useState, useEffect, createContext, useContext } from "react";
 
 // ─── Storage ──────────────────────────────────────────────────────────────────
-const tryGet  = async (key, fb) => { try { const r = await window.storage.get(key); return r ? JSON.parse(r.value) : fb; } catch { return fb; } };
-const trySave = (key, val) => window.storage?.set(key, JSON.stringify(val))?.catch(() => {});
+const getLocal = (key) => {
+  try { return window.localStorage.getItem(key); } catch { return null; }
+};
+const setLocal = (key, val) => {
+  try { window.localStorage.setItem(key, JSON.stringify(val)); return true; } catch { return false; }
+};
+
+const readJSON = (raw, fb) => {
+  try { return raw !== null && raw !== undefined ? JSON.parse(raw) : fb; } catch { return fb; }
+};
+
+const tryGet = async (key, fb) => {
+  if (window.storage?.get) {
+    try {
+      const r = await window.storage.get(key);
+      if (r?.value !== undefined) return readJSON(r.value, fb);
+    } catch {}
+  }
+
+  return readJSON(getLocal(key), fb);
+};
+
+const trySave = (key, val) => {
+  const payload = JSON.stringify(val);
+
+  if (window.storage?.set) {
+    window.storage.set(key, payload)
+      .then(() => setLocal(key, val))
+      .catch(() => setLocal(key, val));
+    return;
+  }
+
+  setLocal(key, val);
+};
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
 const now = (locale = "es-AR") => new Date().toLocaleString(locale, { dateStyle: "short", timeStyle: "short" });
 
@@ -646,7 +678,9 @@ function TabActiveUno({game,players,getScores,onAddRound,onCutJust,onUndo,onClos
   const saveRound=()=>{if(!Object.values(inputs).some(v=>v!==0))return;onAddRound(inputs);const r={};game.playerIds.forEach(id=>r[id]=0);setInputs(r);};
   const lastEvent=game.events[game.events.length-1];
   const undoLabel=lastEvent?.type==="ADD_POINTS"?t.undoRound:lastEvent?.type==="CUT_JUST"?t.undoCut:null;
-  const roundNum=new Set(game.events.filter(e=>e.roundId).map(e=>e.roundId)).size+1;
+  const playedRounds = new Set(game.events.filter(e=>e.roundId).map(e=>e.roundId)).size;
+  const roundNum = playedRounds + 1;
+  const showPodium = playedRounds > 1;
   return(
     <div style={S.tabContent}>
       <h2 style={S.sectionTitle}>{t.active}</h2>
@@ -663,7 +697,7 @@ function TabActiveUno({game,players,getScores,onAddRound,onCutJust,onUndo,onClos
         </div>
         {sorted.map((p,i)=>{
           const sc=scores[p.id]||0;const pct=Math.min(100,(sc/game.target)*100);const isOver=sc>=game.target;
-          return(<div key={p.id} style={S.scoreRow}><span style={{fontSize:20,width:32,textAlign:"center"}}>{i===0?"🏆":i===1?"🥈":i===2?"🥉":`#${i+1}`}</span><div style={{flex:1}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={S.playerName}>{p.name}{isOver?" 💀":""}</span><span style={{fontWeight:800,fontSize:16,color:isOver?"#ef4444":"#f0f4f8"}}>{sc}</span></div><div style={S.progressBg}><div style={{...S.progressFill,width:`${pct}%`,background:isOver?"#ef4444":pct>75?"#f59e0b":"#3b82f6"}}/></div></div></div>);
+          return(<div key={p.id} style={S.scoreRow}><span style={{fontSize:20,width:32,textAlign:"center"}}>{showPodium?(i===0?"🏆":i===1?"🥈":i===2?"🥉":`#${i+1}`):`#${i+1}`}</span><div style={{flex:1}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={S.playerName}>{p.name}{isOver?" 💀":""}</span><span style={{fontWeight:800,fontSize:16,color:isOver?"#ef4444":"#f0f4f8"}}>{sc}</span></div><div style={S.progressBg}><div style={{...S.progressFill,width:`${pct}%`,background:isOver?"#ef4444":pct>75?"#f59e0b":"#3b82f6"}}/></div></div></div>);
         })}
       </div>
       <div style={S.card}>
@@ -742,6 +776,8 @@ function TabActiveGenerala({game,players,getScores,onFillCell,onUndo,onClose,GEN
   const isComplete=gp.every(p=>GEN_COMBOS.every(c=>game.scorecards[p.id][c.id]!==null));
   const maxPossible=GEN_COMBOS.reduce((a,c)=>a+(c.sec==="upper"?c.max:Math.max(...(c.fixed||[0]))),0);
   const canUndo=game.events[game.events.length-1]?.type==="FILL_CELL";
+  const filledTurns = game.events.filter(e=>e.type==="FILL_CELL").length;
+  const showPodium = filledTurns > 1;
   return(
     <div style={S.tabContent}>
       <h2 style={S.sectionTitle}>{t.active}</h2>
@@ -752,7 +788,7 @@ function TabActiveGenerala({game,players,getScores,onFillCell,onUndo,onClose,GEN
         {sorted.map((p,i)=>{
           const sc=scores[p.id]||0,pct=Math.min(100,(sc/maxPossible)*100);
           const filled=GEN_COMBOS.filter(c=>game.scorecards[p.id][c.id]!==null).length;
-          return(<div key={p.id} style={S.scoreRow}><span style={{fontSize:20,width:32,textAlign:"center"}}>{i===0?"🏆":i===1?"🥈":i===2?"🥉":`#${i+1}`}</span><div style={{flex:1}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={S.playerName}>{p.name} <span style={{color:"#4a6070",fontSize:11}}>{t.filledCount(filled,GEN_COMBOS.length)}</span></span><span style={{fontWeight:800,fontSize:16,color:"#fbbf24"}}>{sc}</span></div><div style={S.progressBg}><div style={{...S.progressFill,width:`${pct}%`,background:"linear-gradient(90deg,#b45309,#f59e0b)"}}/></div></div></div>);
+          return(<div key={p.id} style={S.scoreRow}><span style={{fontSize:20,width:32,textAlign:"center"}}>{showPodium?(i===0?"🏆":i===1?"🥈":i===2?"🥉":`#${i+1}`):`#${i+1}`}</span><div style={{flex:1}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={S.playerName}>{p.name} <span style={{color:"#4a6070",fontSize:11}}>{t.filledCount(filled,GEN_COMBOS.length)}</span></span><span style={{fontWeight:800,fontSize:16,color:"#fbbf24"}}>{sc}</span></div><div style={S.progressBg}><div style={{...S.progressFill,width:`${pct}%`,background:"linear-gradient(90deg,#b45309,#f59e0b)"}}/></div></div></div>);
         })}
       </div>
       <div style={S.card}>
