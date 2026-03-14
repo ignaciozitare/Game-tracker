@@ -920,8 +920,8 @@ function TabRanking({ranking,gameType}){
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 const S = {
-  app:          {minHeight:"100vh",background:"#0d1117",fontFamily:"'DM Sans','Segoe UI',system-ui,sans-serif",color:"#f0f4f8"},
-  loading:      {display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100vh",background:"#0d1117"},
+  app:          {minHeight:"100dvh",background:"#0d1117",fontFamily:"'DM Sans','Segoe UI',system-ui,sans-serif",color:"#f0f4f8",width:"100%",overflowX:"hidden"},
+  loading:      {display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"100dvh",background:"#0d1117",width:"100%"},
   spinner:      {width:40,height:40,border:"3px solid #1e2d3d",borderTop:"3px solid #3b82f6",borderRadius:"50%",animation:"spin 0.8s linear infinite"},
   homeHero:     {position:"relative",background:"radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.12) 0%, transparent 70%), linear-gradient(180deg,#0f1923 0%,#0d1117 100%)",padding:"48px 24px 24px",textAlign:"center",borderBottom:"1px solid #1e3448"},
   homeBadge:    {display:"inline-block",fontSize:10,fontWeight:800,letterSpacing:3,color:"#3b82f6",background:"rgba(59,130,246,0.1)",border:"1px solid rgba(59,130,246,0.2)",borderRadius:6,padding:"4px 12px",marginBottom:16},
