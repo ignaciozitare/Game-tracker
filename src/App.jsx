@@ -1,8 +1,27 @@
 import { useState, useEffect, createContext, useContext } from "react";
 
 // ─── Storage ──────────────────────────────────────────────────────────────────
-const tryGet  = async (key, fb) => { try { const r = await window.storage.get(key); return r ? JSON.parse(r.value) : fb; } catch { return fb; } };
-const trySave = (key, val) => window.storage?.set(key, JSON.stringify(val))?.catch(() => {});
+const getLocal = (key) => { try { return window.localStorage.getItem(key); } catch { return null; } };
+const setLocal = (key, val) => { try { window.localStorage.setItem(key, JSON.stringify(val)); } catch {} };
+
+const tryGet = async (key, fb) => {
+  try {
+    if (window.storage?.get) {
+      const r = await window.storage.get(key);
+      return r ? JSON.parse(r.value) : fb;
+    }
+
+    const raw = getLocal(key);
+    return raw !== null ? JSON.parse(raw) : fb;
+  } catch {
+    return fb;
+  }
+};
+
+const trySave = (key, val) => {
+  if (window.storage?.set) return window.storage.set(key, JSON.stringify(val)).catch(() => {});
+  setLocal(key, val);
+};
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
 const now = (locale = "es-AR") => new Date().toLocaleString(locale, { dateStyle: "short", timeStyle: "short" });
 
