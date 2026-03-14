@@ -80,7 +80,7 @@ const T = {
     completeMsg:(name,pts)=>`🏆 ¡Cartón completo! ${name} ganó con ${pts} pts. Podés cerrar la partida.`,
     filledCount:(n,tot)=>`(${n}/${tot})`,
     modalSave:(v)=>`✅ Guardar ${v} pts`,modalCross:"✗ Tachar",modalRange:(max)=>`Valor entre 0 y ${max} pts`,
-    genServida:"⭐ Generala servida",achieved:"✅ Conseguida",crossNo:"✗ Tachar — no lograda (0 pts)",
+    genServida:"⭐ Generala servida",served:"⭐ Servida",achieved:"✅ Conseguida",crossNo:"✗ Tachar — no lograda (0 pts)",
     history:"📜 Historial",noHistory:"Sin partidas aún.",result:"Resultado",finalCard:"Cartón final",events:"Eventos",
     ranking:"🏆 Ranking global",noRanking:"Sin partidas cerradas aún.",
     rankingNote_low:"Menos puntos = mejor · victorias = menor score al cierre",
@@ -91,7 +91,7 @@ const T = {
     genTagline:"El que más puntos junta, gana",genDesc:"Completá tu cartón con las 10 combinaciones. Conseguí la Generala Servida para 100 pts.",
     loading:"Cargando…",
     combos:{ones:"Unos",twos:"Doses",threes:"Treses",fours:"Cuatros",fives:"Cincos",sixes:"Seises",escalera:"Escalera",full:"Full",poker:"Póker",generala:"Generala"},
-    comboHints:{ones:"Suma de 1s",twos:"Suma de 2s",threes:"Suma de 3s",fours:"Suma de 4s",fives:"Suma de 5s",sixes:"Suma de 6s",escalera:"20 pts fijos",full:"30 pts fijos",poker:"40 pts fijos",generala:"50 o 100 pts"},
+    comboHints:{ones:"Suma de 1s",twos:"Suma de 2s",threes:"Suma de 3s",fours:"Suma de 4s",fives:"Suma de 5s",sixes:"Suma de 6s",escalera:"20 o 25 servida",full:"30 o 35 servido",poker:"40 o 45 servido",generala:"50 o 60 servida"},
   },
   en: {
     appBadge:"🎮 GAME TRACKER",appTitle:"Board Game\nTracker",appSub:"Choose a game to start tracking",
@@ -125,7 +125,7 @@ const T = {
     completeMsg:(name,pts)=>`🏆 Scorecard complete! ${name} won with ${pts} pts. You can close the game.`,
     filledCount:(n,tot)=>`(${n}/${tot})`,
     modalSave:(v)=>`✅ Save ${v} pts`,modalCross:"✗ Cross out",modalRange:(max)=>`Value between 0 and ${max} pts`,
-    genServida:"⭐ First-roll Generala",achieved:"✅ Achieved",crossNo:"✗ Cross out — not achieved (0 pts)",
+    genServida:"⭐ First-roll Generala",served:"⭐ Served",achieved:"✅ Achieved",crossNo:"✗ Cross out — not achieved (0 pts)",
     history:"📜 History",noHistory:"No games yet.",result:"Result",finalCard:"Final scorecard",events:"Events",
     ranking:"🏆 Global ranking",noRanking:"No closed games yet.",
     rankingNote_low:"Fewer points = better · wins = lowest score at close",
@@ -136,7 +136,7 @@ const T = {
     genTagline:"Whoever scores the most, wins",genDesc:"Complete your scorecard with all 10 combos. Get a First-roll Generala for 100 pts.",
     loading:"Loading…",
     combos:{ones:"Ones",twos:"Twos",threes:"Threes",fours:"Fours",fives:"Fives",sixes:"Sixes",escalera:"Straight",full:"Full House",poker:"Four of a Kind",generala:"Generala"},
-    comboHints:{ones:"Sum of 1s",twos:"Sum of 2s",threes:"Sum of 3s",fours:"Sum of 4s",fives:"Sum of 5s",sixes:"Sum of 6s",escalera:"20 pts fixed",full:"30 pts fixed",poker:"40 pts fixed",generala:"50 or 100 pts"},
+    comboHints:{ones:"Sum of 1s",twos:"Sum of 2s",threes:"Sum of 3s",fours:"Sum of 4s",fives:"Sum of 5s",sixes:"Sum of 6s",escalera:"20 or 25 served",full:"30 or 35 served",poker:"40 or 45 served",generala:"50 or 60 served"},
   },
   it: {
     appBadge:"🎮 GAME TRACKER",appTitle:"Gestione\nGiochi da Tavolo",appSub:"Scegli un gioco per iniziare",
@@ -170,7 +170,7 @@ const T = {
     completeMsg:(name,pts)=>`🏆 Cartella completa! ${name} ha vinto con ${pts} pts. Puoi chiudere la partita.`,
     filledCount:(n,tot)=>`(${n}/${tot})`,
     modalSave:(v)=>`✅ Salva ${v} pts`,modalCross:"✗ Barrare",modalRange:(max)=>`Valore tra 0 e ${max} pts`,
-    genServida:"⭐ Generala al primo lancio",achieved:"✅ Ottenuta",crossNo:"✗ Barrare — non ottenuta (0 pts)",
+    genServida:"⭐ Generala al primo lancio",served:"⭐ Servita",achieved:"✅ Ottenuta",crossNo:"✗ Barrare — non ottenuta (0 pts)",
     history:"📜 Storico",noHistory:"Nessuna partita ancora.",result:"Risultato",finalCard:"Cartella finale",events:"Eventi",
     ranking:"🏆 Classifica globale",noRanking:"Nessuna partita chiusa ancora.",
     rankingNote_low:"Meno punti = meglio · vittorie = punteggio minore alla chiusura",
@@ -181,7 +181,7 @@ const T = {
     genTagline:"Chi fa più punti, vince",genDesc:"Completa la cartella con tutte le 10 combinazioni. Ottieni la Generala al primo lancio per 100 pts.",
     loading:"Caricamento…",
     combos:{ones:"Uni",twos:"Due",threes:"Tre",fours:"Quattro",fives:"Cinque",sixes:"Sei",escalera:"Scala",full:"Full",poker:"Poker",generala:"Generala"},
-    comboHints:{ones:"Somma degli 1",twos:"Somma dei 2",threes:"Somma dei 3",fours:"Somma dei 4",fives:"Somma dei 5",sixes:"Somma dei 6",escalera:"20 pts fissi",full:"30 pts fissi",poker:"40 pts fissi",generala:"50 o 100 pts"},
+    comboHints:{ones:"Somma degli 1",twos:"Somma dei 2",threes:"Somma dei 3",fours:"Somma dei 4",fives:"Somma dei 5",sixes:"Somma dei 6",escalera:"20 o 25 servita",full:"30 o 35 servito",poker:"40 o 45 servito",generala:"50 o 60 servita"},
   },
   uk: {
     appBadge:"🎮 ТРЕКЕР ІГОР",appTitle:"Менеджер\nНастільних Ігор",appSub:"Оберіть гру для відстеження",
@@ -215,7 +215,7 @@ const T = {
     completeMsg:(name,pts)=>`🏆 Картку заповнено! ${name} переміг з ${pts} очками. Можна закрити гру.`,
     filledCount:(n,tot)=>`(${n}/${tot})`,
     modalSave:(v)=>`✅ Зберегти ${v} очок`,modalCross:"✗ Закреслити",modalRange:(max)=>`Значення від 0 до ${max} очок`,
-    genServida:"⭐ Генерала з першого кидку",achieved:"✅ Досягнуто",crossNo:"✗ Закреслити — не досягнуто (0 очок)",
+    genServida:"⭐ Генерала з першого кидку",served:"⭐ З першого кидка",achieved:"✅ Досягнуто",crossNo:"✗ Закреслити — не досягнуто (0 очок)",
     history:"📜 Історія",noHistory:"Поки що немає ігор.",result:"Результат",finalCard:"Фінальна картка",events:"Події",
     ranking:"🏆 Глобальний рейтинг",noRanking:"Поки що немає завершених ігор.",
     rankingNote_low:"Менше очок = краще · перемоги = найменший рахунок",
@@ -226,7 +226,7 @@ const T = {
     genTagline:"Хто більше набрав — перемагає",genDesc:"Заповніть картку всіма 10 комбінаціями. Отримайте Генералу з першого кидку за 100 очок.",
     loading:"Завантаження…",
     combos:{ones:"Одиниці",twos:"Двійки",threes:"Трійки",fours:"Четвірки",fives:"П'ятірки",sixes:"Шістки",escalera:"Стрит",full:"Фул-хаус",poker:"Покер",generala:"Генерала"},
-    comboHints:{ones:"Сума 1",twos:"Сума 2",threes:"Сума 3",fours:"Сума 4",fives:"Сума 5",sixes:"Сума 6",escalera:"20 очок фікс.",full:"30 очок фікс.",poker:"40 очок фікс.",generala:"50 або 100 очок"},
+    comboHints:{ones:"Сума 1",twos:"Сума 2",threes:"Сума 3",fours:"Сума 4",fives:"Сума 5",sixes:"Сума 6",escalera:"20 або 25 подано",full:"30 або 35 подано",poker:"40 або 45 подано",generala:"50 або 60 подано"},
   },
 };
 
@@ -274,10 +274,10 @@ const makeGenCombos = (t) => [
   { id:"fours",    label:t.combos.fours,    sec:"upper", hint:t.comboHints.fours,    max:20  },
   { id:"fives",    label:t.combos.fives,    sec:"upper", hint:t.comboHints.fives,    max:25  },
   { id:"sixes",    label:t.combos.sixes,    sec:"upper", hint:t.comboHints.sixes,    max:30  },
-  { id:"escalera", label:t.combos.escalera, sec:"lower", hint:t.comboHints.escalera, fixed:[20]      },
-  { id:"full",     label:t.combos.full,     sec:"lower", hint:t.comboHints.full,     fixed:[30]      },
-  { id:"poker",    label:t.combos.poker,    sec:"lower", hint:t.comboHints.poker,    fixed:[40]      },
-  { id:"generala", label:t.combos.generala, sec:"lower", hint:t.comboHints.generala, fixed:[50,100]  },
+  { id:"escalera", label:t.combos.escalera, sec:"lower", hint:t.comboHints.escalera, fixed:[20,25]   },
+  { id:"full",     label:t.combos.full,     sec:"lower", hint:t.comboHints.full,     fixed:[30,35]   },
+  { id:"poker",    label:t.combos.poker,    sec:"lower", hint:t.comboHints.poker,    fixed:[40,45]   },
+  { id:"generala", label:t.combos.generala, sec:"lower", hint:t.comboHints.generala, fixed:[50,60]   },
 ];
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -751,7 +751,14 @@ function TabActiveUno({game,players,getScores,onAddRound,onCutJust,onUndo,onClos
 // ── Cell Modal ────────────────────────────────────────────────────────────────
 function CellInputModal({combo,playerName,onSave,onClose}){
   const {t}=useLang();
-  const [val,setVal]=useState(combo.sec==="upper"?0:combo.fixed[0]);
+  const lowerServedOptions = {
+    escalera:[20,25],
+    full:[30,35],
+    poker:[40,45],
+    generala:[50,60],
+  };
+  const lowerOptions = combo.sec==="lower" ? (lowerServedOptions[combo.id] || combo.fixed || [0]) : [];
+  const [val,setVal]=useState(combo.sec==="upper"?0:lowerOptions[0]);
   return(
     <div style={S.overlay} onClick={onClose}>
       <div style={{...S.modalBox,maxWidth:360}} onClick={e=>e.stopPropagation()}>
@@ -771,17 +778,29 @@ function CellInputModal({combo,playerName,onSave,onClose}){
             </>
           ):(
             <>
-              {combo.fixed.map(pts=>(
-                <button key={pts} style={{...S.btnPrimary,padding:16,fontSize:16,background:combo.id==="generala"&&pts===100?"linear-gradient(135deg,#78350f,#f59e0b)":"#2563eb"}} onClick={()=>onSave(pts)}>
-                  {combo.id==="generala"&&pts===100?t.genServida:t.achieved} · <strong>{pts} pts</strong>
-                </button>
-              ))}
+              {lowerOptions.map(pts=>{
+                const served = lowerOptions.length>1 && pts===Math.max(...lowerOptions);
+                return(<button key={pts} style={{...S.btnPrimary,padding:16,fontSize:16,background:served?"linear-gradient(135deg,#78350f,#f59e0b)":"#2563eb"}} onClick={()=>onSave(pts)}>
+                  {served?t.served:t.achieved} · <strong>{pts} pts</strong>
+                </button>);
+              })}
               <button style={{background:"transparent",color:"#6b7280",border:"1px solid #2a4052",borderRadius:8,padding:14,fontSize:14,cursor:"pointer"}} onClick={()=>onSave(0)}>{t.crossNo}</button>
             </>
           )}
         </div>
       </div>
     </div>
+  );
+}
+
+
+function renderGeneralaCell(game,p,combo,setCellModal){
+  const v=game.scorecards[p.id][combo.id];
+  const filled=v!==null;
+  return(
+    <td key={p.id} style={{...S.tdCell,cursor:"pointer"}} onClick={()=>setCellModal({playerId:p.id,comboId:combo.id,combo})}>
+      {filled?<span style={{fontWeight:700,color:v===0?"#374151":"#10b981"}}>{v===0?"✗":v}</span>:<span style={{color:"#1e3448",fontSize:22}}>·</span>}
+    </td>
   );
 }
 
@@ -825,7 +844,7 @@ function TabActiveGenerala({game,players,getScores,onFillCell,onUndo,onClose,GEN
               <tr><td colSpan={gp.length+1} style={S.secHeader}>{t.upperSec}</td></tr>
               {GEN_COMBOS.filter(c=>c.sec==="upper").map(combo=>(
                 <tr key={combo.id}><td style={S.tdLabel}><span style={{fontWeight:600,color:"#d1d5db"}}>{combo.label}</span><span style={{display:"block",fontSize:10,color:"#4a6070"}}>{combo.hint}</span></td>
-                  {gp.map(p=>{const v=game.scorecards[p.id][combo.id];const filled=v!==null;return(<td key={p.id} style={{...S.tdCell,cursor:"pointer"}} onClick={()=>setCellModal({playerId:p.id,comboId:combo.id,combo})}>{filled?<span style={{fontWeight:700,color:v===0?"#374151":"#10b981"}}>{v===0?"✗":v}</span>:<span style={{color:"#1e3448",fontSize:22}}>·</span>}</td>);})}
+                  {gp.map(p=>renderGeneralaCell(game,p,combo,setCellModal))}
                 </tr>
               ))}
               <tr style={{background:"rgba(255,255,255,0.015)"}}>
@@ -835,7 +854,7 @@ function TabActiveGenerala({game,players,getScores,onFillCell,onUndo,onClose,GEN
               <tr><td colSpan={gp.length+1} style={S.secHeader}>{t.lowerSec}</td></tr>
               {GEN_COMBOS.filter(c=>c.sec==="lower").map(combo=>(
                 <tr key={combo.id}><td style={S.tdLabel}><span style={{fontWeight:600,color:"#d1d5db"}}>{combo.label}</span><span style={{display:"block",fontSize:10,color:"#4a6070"}}>{combo.hint}</span></td>
-                  {gp.map(p=>{const v=game.scorecards[p.id][combo.id];const filled=v!==null;return(<td key={p.id} style={{...S.tdCell,cursor:"pointer"}} onClick={()=>setCellModal({playerId:p.id,comboId:combo.id,combo})}>{filled?<span style={{fontWeight:700,color:v===0?"#374151":combo.id==="generala"&&v===100?"#fbbf24":"#10b981"}}>{v===0?"✗":v}{combo.id==="generala"&&v===100?"⭐":""}</span>:<span style={{color:"#1e3448",fontSize:22}}>·</span>}</td>);})}
+                  {gp.map(p=>renderGeneralaCell(game,p,combo,setCellModal))}
                 </tr>
               ))}
               <tr style={{background:"rgba(245,158,11,0.06)"}}><td style={{...S.tdLabel,fontWeight:800,color:"#f0f4f8",fontSize:13,borderTop:"2px solid #2a3a1a"}}>{t.total}</td>{gp.map(p=><td key={p.id} style={{...S.tdCell,fontWeight:900,fontSize:17,color:"#fbbf24",borderTop:"2px solid #2a3a1a"}}>{scores[p.id]||0}</td>)}</tr>
@@ -969,6 +988,7 @@ function TabRanking({ranking,gameType}){
           ))}
         </div>
       }
+      {pendingDeactivate&&<div style={S.overlay} onClick={()=>setPendingDeactivate(null)}><div style={{...S.modalBox,maxWidth:460}} onClick={e=>e.stopPropagation()}><div style={S.modalHeader}><div><p style={{margin:0,fontSize:16,fontWeight:800,color:"#f0f4f8"}}>Confirmar baja</p><p style={{margin:0,fontSize:12,color:"#7a9ab0"}}>{pendingDeactivate.player.name}</p></div><button style={S.modalClose} onClick={()=>setPendingDeactivate(null)}>✕</button></div><div style={{padding:18,display:"flex",flexDirection:"column",gap:12}}><p style={{margin:0,color:"#a3b4c8",lineHeight:1.5}}>¿Seguro que querés dar de baja este jugador?</p>{pendingDeactivate.linkedGames>0&&<p style={{margin:0,color:"#fbbf24",fontSize:13,lineHeight:1.5}}>Aparece en {pendingDeactivate.linkedGames} partida{pendingDeactivate.linkedGames!==1?"s":""}. El historial y ranking se conservan.</p>}<div style={{display:"flex",gap:8,justifyContent:"flex-end"}}><button style={S.btnSecondary} onClick={()=>setPendingDeactivate(null)}>{t.cancelClose}</button><button style={S.btnClose} onClick={confirmDeactivate}>Confirmar</button></div></div></div></div>}
     </div>
   );
 }
