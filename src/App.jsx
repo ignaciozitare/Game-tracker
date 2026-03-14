@@ -751,7 +751,14 @@ function TabActiveUno({game,players,getScores,onAddRound,onCutJust,onUndo,onClos
 // ── Cell Modal ────────────────────────────────────────────────────────────────
 function CellInputModal({combo,playerName,onSave,onClose}){
   const {t}=useLang();
-  const [val,setVal]=useState(combo.sec==="upper"?0:combo.fixed[0]);
+  const lowerServedOptions = {
+    escalera:[20,25],
+    full:[30,35],
+    poker:[40,45],
+    generala:[50,60],
+  };
+  const lowerOptions = combo.sec==="lower" ? (lowerServedOptions[combo.id] || combo.fixed || [0]) : [];
+  const [val,setVal]=useState(combo.sec==="upper"?0:lowerOptions[0]);
   return(
     <div style={S.overlay} onClick={onClose}>
       <div style={{...S.modalBox,maxWidth:360}} onClick={e=>e.stopPropagation()}>
@@ -771,8 +778,8 @@ function CellInputModal({combo,playerName,onSave,onClose}){
             </>
           ):(
             <>
-              {combo.fixed.map(pts=>{
-                const served = combo.fixed.length>1 && pts===Math.max(...combo.fixed);
+              {lowerOptions.map(pts=>{
+                const served = lowerOptions.length>1 && pts===Math.max(...lowerOptions);
                 return(<button key={pts} style={{...S.btnPrimary,padding:16,fontSize:16,background:served?"linear-gradient(135deg,#78350f,#f59e0b)":"#2563eb"}} onClick={()=>onSave(pts)}>
                   {served?t.served:t.achieved} · <strong>{pts} pts</strong>
                 </button>);
