@@ -1,7 +1,42 @@
 import { useState, useEffect, createContext, useContext } from "react";
 
 // ─── Storage ──────────────────────────────────────────────────────────────────
-import { tryGet, trySave, uid, now } from "./src/storage.js";
+const getLocal = (key) => {
+  try { return window.localStorage.getItem(key); } catch { return null; }
+};
+const setLocal = (key, val) => {
+  try { window.localStorage.setItem(key, JSON.stringify(val)); return true; } catch { return false; }
+};
+
+const readJSON = (raw, fb) => {
+  try { return raw !== null && raw !== undefined ? JSON.parse(raw) : fb; } catch { return fb; }
+};
+
+const tryGet = async (key, fb) => {
+  if (window.storage?.get) {
+    try {
+      const r = await window.storage.get(key);
+      if (r?.value !== undefined) return readJSON(r.value, fb);
+    } catch {}
+  }
+
+  return readJSON(getLocal(key), fb);
+};
+
+const trySave = (key, val) => {
+  const payload = JSON.stringify(val);
+
+  if (window.storage?.set) {
+    window.storage.set(key, payload)
+      .then(() => setLocal(key, val))
+      .catch(() => setLocal(key, val));
+    return;
+  }
+
+  setLocal(key, val);
+};
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
+const now = (locale = "es-AR") => new Date().toLocaleString(locale, { dateStyle: "short", timeStyle: "short" });
 
 // ─── i18n ─────────────────────────────────────────────────────────────────────
 const LANGS = [
