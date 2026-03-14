@@ -665,7 +665,7 @@ function TabActiveUno({game,players,getScores,onAddRound,onCutJust,onUndo,onClos
   const [inputs,setInputs]=useState({});
   const [confirmClose,setConfirmClose]=useState(false);
   const [showBreakdown,setShowBreakdown]=useState(false);
-  useEffect(()=>{if(game){const init={};game.playerIds.forEach(id=>init[id]=0);setInputs(init);}},[game?.id]);
+  useEffect(()=>{if(game){const init={};game.playerIds.forEach(id=>init[id]="");setInputs(init);}},[game?.id]);
   if(!game) return(<div style={S.tabContent}><h2 style={S.sectionTitle}>{t.active}</h2><div style={S.empty}>{t.noActive}</div></div>);
   const scores=getScores(game);
   const gamePlayers=game.playerIds.map(id=>players.find(p=>p.id===id)).filter(Boolean);
@@ -675,7 +675,18 @@ function TabActiveUno({game,players,getScores,onAddRound,onCutJust,onUndo,onClos
   const cutsThisRound=game.events.slice(lastAddIdx+1).filter(e=>e.type==="CUT_JUST");
   const whoCutId=cutsThisRound[0]?.playerId;
   const cutSet=new Set(cutsThisRound.map(e=>e.playerId));
-  const saveRound=()=>{if(!Object.values(inputs).some(v=>v!==0))return;onAddRound(inputs);const r={};game.playerIds.forEach(id=>r[id]=0);setInputs(r);};
+  const saveRound=()=>{
+    const payload={};
+    game.playerIds.forEach(id=>{
+      const raw=inputs[id];
+      if(raw==="") return;
+      const n=Number(raw);
+      if(!Number.isNaN(n)) payload[id]=n;
+    });
+    if(Object.keys(payload).length===0) return;
+    onAddRound(payload);
+    const r={};game.playerIds.forEach(id=>r[id]="");setInputs(r);
+  };
   const lastEvent=game.events[game.events.length-1];
   const undoLabel=lastEvent?.type==="ADD_POINTS"?t.undoRound:lastEvent?.type==="CUT_JUST"?t.undoCut:null;
   const playedRounds = new Set(game.events.filter(e=>e.roundId).map(e=>e.roundId)).size;
@@ -702,7 +713,7 @@ function TabActiveUno({game,players,getScores,onAddRound,onCutJust,onUndo,onClos
       </div>
       <div style={S.card}>
         <p style={S.cardLabel}>{t.loadRound}</p>
-        <div style={S.roundGrid}>{gamePlayers.map(p=>(<div key={p.id} style={S.roundInput}><label style={S.roundLabel}>{p.name}</label><input type="number" style={S.input} value={inputs[p.id]??0} onChange={e=>setInputs(s=>({...s,[p.id]:Number(e.target.value)}))}/></div>))}</div>
+        <div style={S.roundGrid}>{gamePlayers.map(p=>(<div key={p.id} style={S.roundInput}><label style={S.roundLabel}>{p.name}</label><input type="number" style={S.input} value={inputs[p.id]??""} onChange={e=>setInputs(s=>({...s,[p.id]:e.target.value}))}/></div>))}</div>
         <button style={{...S.btnPrimary,width:"100%",marginTop:12}} onClick={saveRound}>{t.saveRound}</button>
       </div>
       <div style={S.card}>
